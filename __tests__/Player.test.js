@@ -1,4 +1,6 @@
 const { TestWatcher } = require('@jest/core');
+const { expect } = require('@jest/globals');
+const { default: expectationResultFactory } = require('jest-jasmine2/build/expectationResultFactory');
 const Player = require('../lib/Player');
 const Potion = require('../lib/Potion');
 
@@ -36,4 +38,33 @@ test("gets inventory from player or returns false", () => {
     player.inventory = [];
 
     expect(player.getInventory()).toEqual(false);
+});
+
+test("get player's health value", () => {
+    const player = new Player('Dave');
+
+    expect(player.getHealth()).toEqual(expect.stringContaining(player.health.toString()));
+});
+
+test("check to see if the player is alive or not", () => {
+    const player = new Player('Dave');
+
+    expect(player.isAlive()).toBeTruthy();
+
+    player.health = 0;
+
+    expect(player.isAlive()).toBeFalsy();
+});
+
+test("subtracts from player's health", () => {
+    const player = new Player('Dave');
+    const oldHealth = player.health;
+
+    player.reduceHealth(5);
+
+    expect(player.health).toBe(oldHealth - 5);
+
+    player.reduceHealth(99999);
+
+    expect(player.health).toBe(0);
 });
